@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Special 💖</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #ff4d6d;
+            --secondary-color: #fff0f3;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            font-family: 'Pacifico', cursive;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            max-width: 90%;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin: 0 0 2rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #yes-btn {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1);
+        }
+
+        #no-btn {
+            background: #ffd7df;
+            color: var(--primary-color);
+        }
+
+        .btn:hover {
+            transform: scale(1.1) rotate(3deg);
+        }
+
+        .hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .heart {
+            position: absolute;
+            color: var(--primary-color);
+            animation: float 6s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        #message {
+            margin-top: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .visible {
+            max-height: 100px !important;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .btn { padding: 0.8rem 1.5rem; }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary-color);
+            animation: confetti-fall 3s linear;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts-container"></div>
+    <div class="container">
+        <h1>Will You Be My Valentine? 💌</h1>
+        <div class="buttons">
+            <button class="btn" id="yes-btn">Absolutely Yes! 🌹</button>
+            <button class="btn" id="no-btn">Maybe No? 😅</button>
+        </div>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        (function() {
+            try {
+                // Initialize variables
+                const yesBtn = document.getElementById('yes-btn');
+                const noBtn = document.getElementById('no-btn');
+                const message = document.getElementById('message');
+                const heartsContainer = document.getElementById('hearts-container');
+                let noCount = 0;
+                let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+                // Create floating hearts
+                function createHearts() {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '💖';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                    heartsContainer.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 6000);
+                }
+
+                // Handle yes button click
+                function handleYes() {
+                    message.classList.add('visible');
+                    message.innerHTML = '🎉 Yay! You just made my heart skip a beat! 💘<br>Let\'s make beautiful memories together! 🌸';
+                    yesBtn.disabled = true;
+                    noBtn.style.display = 'none';
+                    
+                    // Add confetti
+                    for(let i = 0; i < 50; i++) {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * 100 + '%';
+                        confetti.style.background = `hsl(${Math.random() * 360}, 70%, 50%)`;
+                        confetti.style.animationDelay = Math.random() * 2 + 's';
+                        document.body.appendChild(confetti);
+                        setTimeout(() => confetti.remove(), 3000);
+                    }
+                }
+
+                // Handle no button interaction
+                function handleNo() {
+                    noCount++;
+                    const containerRect = document.querySelector('.container').getBoundingClientRect();
+                    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+                    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+                    
+                    // Dynamic responses
+                    const responses = [
+                        "Are you sure? 😢",
+                        "Maybe think again? 💭",
+                        "Pretty please? 🥺",
+                        "You're breaking my heart! 💔",
+                        "Final chance! 😭"
+                    ];
+                    
+                    message.classList.add('visible');
+                    message.innerHTML = responses[Math.min(noCount - 1, responses.length - 1)] || "Okay, I'll keep trying! 💪";
+                    
+                    // Increase button movement speed
+                    const moveAmount = Math.min(noCount * 20, 200);
+                    const newX = Math.random() * (maxX - containerRect.left) + containerRect.left;
+                    const newY = Math.random() * (maxY - containerRect.top) + containerRect.top;
+                    
+                    noBtn.style.position = 'absolute';
+                    noBtn.style.left = `${newX}px`;
+                    noBtn.style.top = `${newY}px`;
+                    
+                    // Shrink button after 3 tries
+                    if(noCount >= 3) {
+                        noBtn.style.transform = `scale(${Math.max(0.7, 1 - noCount/10)})`;
+                    }
+                }
+
+                // Event Listeners with error handling
+                yesBtn.addEventListener('click', handleYes);
+                noBtn.addEventListener('click', handleNo);
+
+                // Mobile-specific handling
+                if(isMobile) {
+                    noBtn.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        handleNo();
+                    });
+                }
+
+                // Create initial hearts
+                setInterval(createHearts, 300);
+                
+                // Prevent context menu on buttons
+                document.querySelectorAll('.btn').forEach(btn => {
+                    btn.addEventListener('contextmenu', (e) => e.preventDefault());
+                });
+
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    if(noBtn.style.position === 'absolute') {
+                        handleNo();
+                    }
+                });
+
+            } catch(error) {
+                console.error('Error initializing script:', error);
+                alert('Something went wrong! Please refresh the page. 💖');
+            }
+        })();
+    </script>
+</body>
+</html>
